@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "registry.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "registry.name" . }}
+    helm.sh/chart: {{ include "registry.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "registry.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "registry.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      volumes:
+        {{- if eq .Values.settings.useSecret true }}
+        - name: user
+          secret:
+            secretName: {{ .Values.settings.secret }}
+        {{- end }}
+        - name: store
+{{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "registry.fullname" . }}
+{{- else }}
+          emptyDir: {}
+{{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - mountPath: /var/opt/ldregistry/
+            name: store
+        {{- if eq .Values.settings.useSecret true }}
+          - name: user
+            mountPath: /opt/ldregistry/config/user.ini
+            subPath: user.ini
+        {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+          - name: REGISTRY_BASE_URI
+            value: {{ .Values.settings.baseURI }}
+          - name: REGISTRY_BASE_PATH
+            value: {{ .Values.settings.basePath }}
+          {{- if eq .Values.settings.useSecret false }}
+          - name: USER_LOGIN
+            value: {{ .Values.settings.username }}
+          - name: USER_PASSWORD
+            value: {{ .Values.settings.password }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,8 @@
+{{- if .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "registry.fullname" . }}
+spec:
+  {{- toYaml .Values.persistence.storageSpec | nindent 2 }}
+{{- end }}
