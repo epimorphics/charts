@@ -1,0 +1,48 @@
+{{- if .Values.logging.fluentd.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "sapi-app.fullname" . }}-logging
+data:
+  fluent.conf: |
+    <source>
+      type tail
+      format none
+      path /var/log/production.log
+      pos_file /var/log/production.log.pos
+      tag rails.logs
+    </source>
+
+    <match **>
+      @type copy
+      <store>
+        @type stdout
+      </store>
+{{- if default false .Values.logging.fluentd.s3 }}
+      <store>
+        @type s3
+
+        format single_value
+        key_name message
+
+        aws_key_id "#{ENV['AWS_ACCESS_KEY_ID']}"
+        aws_sec_key "#{ENV['AWS_SECRET_ACCESS_KEY']}"
+        s3_bucket "#{ENV['S3_BUCKET']}"
+        s3_region "#{ENV['AWS_REGION']}"
+        path "#{ENV['S3_PATH']}"
+
+        <buffer tag,time>
+          @type file
+          path /var/log/s3
+          timekey 3600 # 1 hour partition
+          timekey_wait 10m
+          timekey_use_utc true # use utc
+          chunk_limit_size 256m
+        </buffer>
+      </store>
+{{- end}}
+    </match>
+
+
+{{- end }}
+

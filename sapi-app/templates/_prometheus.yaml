@@ -1,0 +1,19 @@
+{{- define "prometheus.railsenv" -}}
+{{- if .Values.metrics.prometheus.enabled }}
+- name: RAILS_PROMETHEUS_EXPORTER
+  value: "true"
+{{- end }}
+{{- end -}}
+{{- define "prometheus.sidecar" -}}
+{{- if .Values.metrics.prometheus.enabled }}
+- name: prometheus-exporter
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  command: ["./bin/bundle", "exec", "prometheus_exporter"]
+{{- end }}
+{{- end -}}
+{{- define "prometheus.podAnnotations" -}}
+{{- if .Values.metrics.prometheus.enabled }}
+prometheus.io/port: "9394"
+prometheus.io/scrape: "true"
+{{- end }}
+{{- end -}}

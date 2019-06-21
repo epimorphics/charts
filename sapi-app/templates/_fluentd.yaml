@@ -1,0 +1,46 @@
+{{- define "fluentd.emptydir" -}}
+{{- if .Values.logging.fluentd.enabled }}
+- name: log-dir
+  emptyDir: {}
+- name: fluentd-config
+  configMap:
+    name: {{ include "sapi-app.fullname" . }}-logging
+{{- end }}
+{{- end -}}
+{{- define "fluentd.sidecar" -}}
+{{- if .Values.logging.fluentd.enabled }}
+- name: fluentd
+  image: {{ .Values.logging.fluentd.image }}:{{ .Values.logging.fluentd.tag }}
+  envFrom:
+  {{- if .Values.logging.fluentd.s3.enabled }}
+  - secretRef:
+      name: {{ .Values.logging.fluentd.s3.secrets }}
+  {{- end }}
+  env:
+  {{- if .Values.logging.fluentd.s3.enabled }}
+  - name: S3_BUCKET
+    value: "{{ .Values.logging.fluentd.s3.bucket }}"
+  - name: AWS_REGION
+    value: "{{ .Values.logging.fluentd.s3.region }}"
+  - name: S3_PATH
+    value: "{{ .Values.logging.fluentd.s3.path }}"
+  {{- end }}
+  volumeMounts:
+  - name: log-dir
+    mountPath: /var/log
+  - name: fluentd-config
+    mountPath: /fluentd/etc/
+{{- end }}
+{{- end -}}
+{{- define "fluentd.railsenv" -}}
+{{- if .Values.logging.fluentd.enabled }}
+- name: RAILS_LOG_TO_STDOUT
+  value: ""
+{{- end }}
+{{- end -}}
+{{- define "fluentd.logmount" -}}
+{{- if .Values.logging.fluentd.enabled }}
+- name: log-dir
+  mountPath: /usr/src/app/log
+{{- end }}
+{{- end -}}

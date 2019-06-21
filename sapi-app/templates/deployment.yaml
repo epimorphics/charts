@@ -1,0 +1,82 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "sapi-app.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "sapi-app.name" . }}
+    helm.sh/chart: {{ include "sapi-app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    skipper: "true"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "sapi-app.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "sapi-app.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        {{- include "prometheus.podAnnotations" . | nindent 8}}
+    spec:
+      volumes:
+      - name: credentials
+        secret:
+          secretName: "{{ .Values.rails.credentials.secret }}"
+      {{- include "fluentd.emptydir" . | nindent 6}}
+      containers:
+        {{- include "fluentd.sidecar" . | nindent 8}}
+        {{- include "prometheus.sidecar" . | nindent 8}}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: credentials
+            mountPath: /usr/src/app/config/credentials.yml.enc
+            subPath: credentials.yml.enc
+          - name: credentials
+            mountPath: /usr/src/app/config/master.key
+            subPath: master.key
+          {{- include "fluentd.logmount" . | nindent 10}}
+          env:
+          - name: RAILS_SAPI_API_BASE
+            value: "http://{{ .Release.Name }}-sapi-api:8080"
+          {{- include "fluentd.railsenv" . | nindent 10 -}}
+          {{- include "prometheus.railsenv" . | nindent 10 -}}
+{{- range .Values.environment }}
+          - name: {{ .name }}
+            value: {{ .value }}
+{{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+        {{ if .Values.probes.livenessProbe }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+        {{ end }}
+        {{ if .Values.probes.readinessProbe }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+        {{ end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

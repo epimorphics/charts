@@ -1,0 +1,6 @@
+export AWS_PROFILE=epi-expt
+REPO=epi-charts
+#helm s3 push ruby-base
+VERSION=$(cat Chart.yaml | grep -oP "version: \K[\w,.]+$" | tr -d '\n')
+NAME=$(cat Chart.yaml | grep -oP "name: \K(.*)$" | tr -d '\n')
+helm s3 push $NAME-$VERSION.tgz $REPO
