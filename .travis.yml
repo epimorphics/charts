@@ -11,6 +11,8 @@ install:
   - helm init --client-only
   - helm plugin install https://github.com/hypnoglow/helm-s3.git --version $HELM_S3_VERSION
 script: make build
+before_deploy:
+  - helm repo add epi-charts s3://epi-charts/charts
 deploy:
   provider: script
   skip_cleanup: true
