@@ -1,0 +1,6 @@
+dependencies:
+- name: fuseki
+  repository: file://../fuseki
+  version: 0.1.0
+digest: sha256:6c2ca0c714cdaa6ed094d7c0052c62b330491702bb87bbe8be40b8640ce7a158
+generated: 2019-05-23T14:38:54.154954245+01:00
