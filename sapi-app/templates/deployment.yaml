@@ -33,13 +33,6 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          volumeMounts:
-          - name: credentials
-            mountPath: /usr/src/app/config/credentials.yml.enc
-            subPath: credentials.yml.enc
-          - name: credentials
-            mountPath: /usr/src/app/config/master.key
-            subPath: master.key
           {{- include "fluentd.logmount" . | nindent 10}}
           env:
           - name: RAILS_SAPI_API_BASE
@@ -50,6 +43,9 @@ spec:
           - name: {{ .name }}
             value: {{ .value }}
 {{- end }}
+          envFrom:
+          - secretRef:
+              name: {{ .Release.Name }}-rails-secret
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
