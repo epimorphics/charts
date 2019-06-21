@@ -44,10 +44,10 @@ backups:
   topic: fhrs.fuseki.checkpoint
 
 s3:
-  enabled: true
+  enabled: false
   secrets: fsa-aws-secrets
   loader:
-    enabled: true
+    enabled: false
     bucket: s3://fsa-static-fuseki-data
     key: uv-data-preview-1b.tgz
 
