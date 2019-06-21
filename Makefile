@@ -16,6 +16,7 @@ dist/sapi-api-*.tgz: dist
 		helm package sapi-api -d dist
 
 dist/sapi-app-*.tgz: dist
+		cd sapi-app && helm dep update && cd ../
 		helm package sapi-app -d dist
 
 build-fuseki: dist/fuseki-*.tgz
