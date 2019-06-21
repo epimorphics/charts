@@ -1,0 +1,33 @@
+{{- define "fuseki.volumes" -}}
+{{- if not .Values.storage.enabled }}
+- name: data
+  emptyDir: {}
+{{- end }}
+{{- if not .Values.backups.enabled }}
+- name: run
+  emptyDir: {}
+{{- end }}
+{{- end -}}
+
+{{- define "fuseki.volumeclaimtemplates" -}}
+{{- if .Values.storage.enabled }}
+- metadata:
+    name: data
+  spec:
+    accessModes: {{ .Values.storage.accessModes }}
+    storageClassName: {{ .Values.storage.storageClass }}
+    resources:
+      requests:
+        storage: {{ .Values.storage.requests }}
+{{- end }}
+{{- if .Values.backups.enabled }}
+- metadata:
+    name: run
+  spec:
+    accessModes: {{ .Values.backups.accessModes }}
+    storageClassName: {{ .Values.backups.storageClass }}
+    resources:
+      requests:
+        storage: {{ .Values.backups.requests }}
+{{- end }}
+{{- end -}}

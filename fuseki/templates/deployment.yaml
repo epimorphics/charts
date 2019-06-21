@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: StatefulSet 
+metadata:
+  name: {{ include "fuseki.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "fuseki.name" . }}
+    helm.sh/chart: {{ include "fuseki.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "fuseki.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  serviceName: "{{ include "fuseki.fullname" . }}"
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "fuseki.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      volumes:
+      {{- include "fuseki.volumes" . | nindent 6}}
+      - name: fuseki-config
+        configMap:
+          name: {{ include "fuseki.fullname" . }}-config
+          items:
+          - key: config-tdb.ttl
+            path: config-tdb.ttl
+      - name: fsa-core-context
+        configMap:
+          name: {{ include "fuseki.fullname" . }}-materializer-config
+          items:
+          - key: fsa-core-context.jsonld
+            path: fsa-core-context.jsonld
+      initContainers:
+      - name: rm-lock
+        image: busybox:1.30.0
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["sh", "-c"]
+        args: ["rm /var/lib/fuseki/databases/DS-DB/tdb.lock || rm /var/lib/fuseki/run/system/tdb.lock || true"]
+        volumeMounts:
+        - name: data
+          mountPath: "/var/lib/fuseki/databases"
+        - name: run
+          mountPath: "/var/lib/fuseki/run"
+      {{- if .Values.s3.loader.enabled }}
+      {{- include "fuseki.s3loader" . | nindent 6}}
+      {{- end }}
+      containers:
+        {{- if .Values.kafkaLoader.enabled }}
+        {{- include "fuseki.kafkaloader" . | nindent 8}}
+        {{- end }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: fuseki
+              containerPort: 3030
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /$/ping
+              port: fuseki
+            initialDelaySeconds: 30
+            periodSeconds: 3
+          env:
+          - name: JVM_ARGS
+            value: "{{ .Values.jvmArgs }}"
+          {{ if .Values.s3.enabled }}
+          envFrom:
+          - secretRef:
+              name: "{{ .Values.s3.secrets }}"
+          {{ end }}
+          readinessProbe:
+            httpGet:
+              path: /$/ping
+              port: fuseki
+            initialDelaySeconds: 30
+            periodSeconds: 3
+          volumeMounts:
+          - name: fuseki-config
+            mountPath: "/var/lib/fuseki/config-tdb.ttl"
+            subPath: config-tdb.ttl
+          - name: data
+            mountPath: "/var/lib/fuseki/databases"
+          - name: run
+            mountPath: "/var/lib/fuseki/run"
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+  volumeClaimTemplates:
+  {{- include "fuseki.volumeclaimtemplates" . | nindent 2}}

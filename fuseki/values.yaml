@@ -1,0 +1,136 @@
+# Default values for fuseki.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: epimorphics/fuseki
+  tag: "3.12.0"
+  pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 3030
+  # annotations: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+    prometheus.io/path: "/metrics"
+
+kafkaLoader:
+  enabled: false
+  topic: fhrs.test
+  bootstrapServer: bootstrap:9092
+  repository: 173681544495.dkr.ecr.eu-west-1.amazonaws.com/epimorphics/fuseki-materializer
+  tag: "0.0.1-SNAPSHOT"
+
+jvmArgs: "-Xmx1000m"
+
+storage:
+  enabled: true
+  requests: 1Gi
+  accessModes: [ "ReadWriteOnce" ] 
+  storageClass: ""
+
+backups:
+  enabled: true
+  requests: 1Gi
+  accessModes: [ "ReadWriteOnce" ] 
+  storageClass: ""
+  topic: fhrs.fuseki.checkpoint
+
+s3:
+  enabled: true
+  secrets: fsa-aws-secrets
+  loader:
+    enabled: true
+    bucket: s3://fsa-static-fuseki-data
+    key: uv-data-preview-1b.tgz
+
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+fuseki:
+  config: |
+    # Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+    ## Epimorphics default Fuseki configuration
+
+    @prefix :        <#> .
+    @prefix fuseki:  <http://jena.apache.org/fuseki#> .
+    @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+    @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+    [] rdf:type fuseki:Server ;
+       # Timeout - server-wide default: milliseconds.
+       # Format 1: "1000" -- 1 second timeout
+       # Format 2: "10000,60000" -- 10s timeout to first result, then 60s timeout to for rest of query.
+       # See java doc for ARQ.queryTimeout
+         ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "40000,50000" ] ;
+       # ja:loadClass "your.code.Class" ;
+
+       fuseki:services (
+         <#service_ds>
+       ) .
+
+    # TDB
+    [] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+    tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+    tdb:GraphTDB    rdfs:subClassOf  ja:Model .
+
+
+
+    <#service_ds> rdf:type fuseki:Service ;
+        rdfs:label                             "TDB Service (RW)" ;
+        fuseki:name                            "ds" ;
+        fuseki:serviceQuery                    "query" ;
+        fuseki:serviceQuery                    "sparql" ;
+        fuseki:serviceUpdate                   "update" ;
+        fuseki:serviceUpload                   "upload" ;
+        fuseki:serviceReadWriteGraphStore      "data" ;
+        # A separate read-only graph store endpoint:
+        fuseki:serviceReadGraphStore           "get" ;
+        fuseki:dataset                         <#ds> ;
+        .
+        
+
+    <#ds> rdf:type      tdb:DatasetTDB ;
+                          tdb:location   "/var/lib/fuseki/databases/DS-DB";
+    ##     # Default graph for query is the (read-only) union of all named graphs.
+                          tdb:unionDefaultGraph true;
+         .

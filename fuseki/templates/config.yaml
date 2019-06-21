@@ -1,0 +1,483 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fuseki.fullname" . }}-materializer-config
+data:
+  fsa-core-context.jsonld: |
+    {
+      "label": {
+        "@id": "http://www.w3.org/2000/01/rdf-schema#label",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "broader": {
+        "@id": "http://www.w3.org/2004/02/skos/core#broader",
+        "@type": "@id"
+      },
+      "definition": {
+        "@id": "http://www.w3.org/2004/02/skos/core#definition"
+      },
+      "inScheme": {
+        "@id": "http://www.w3.org/2004/02/skos/core#inScheme",
+        "@type": "@id"
+      },
+      "narrower": {
+        "@id": "http://www.w3.org/2004/02/skos/core#narrower",
+        "@type": "@id"
+      },
+      "notation": {
+        "@id": "http://www.w3.org/2004/02/skos/core#notation",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "prefLabel": {
+        "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
+        "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+      },
+      "topConceptOf": {
+        "@id": "http://www.w3.org/2004/02/skos/core#topConceptOf",
+        "@type": "@id"
+      },
+      "activity": {
+        "@id": "http://data.food.gov.uk/business/def/core/activity",
+        "@type": "@id"
+      },
+      "hasEnd": {
+        "@id": "http://data.food.gov.uk/business/def/core/hasEnd",
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "hasStart": {
+        "@id": "http://data.food.gov.uk/business/def/core/hasStart",
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "rawActivityCode": {
+        "@id": "http://data.food.gov.uk/business/def/core/rawActivityCode",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "reconciledAddress": {
+        "@id": "http://data.food.gov.uk/business/def/core/reconciledAddress",
+        "@type": "@id"
+      },
+      "uprn": {
+        "@id": "http://data.food.gov.uk/business/def/core/uprn",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "welshExtendedAddress": {
+        "@id": "http://data.food.gov.uk/business/def/core/welshExtendedAddress"
+      },
+      "reconciliationStatus": {
+        "@id": "http://data.food.gov.uk/business/def/reconciliation/reconciliationStatus",
+        "@type": "@id"
+      },
+      "lat": {
+        "@id": "http://www.w3.org/2003/01/geo/wgs84_pos#lat",
+        "@type": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "long": {
+        "@id": "http://www.w3.org/2003/01/geo/wgs84_pos#long",
+        "@type": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "countryName": {
+        "@id": "http://www.w3.org/2006/vcard/ns#country-name",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "extendedAddress": {
+        "@id": "http://www.w3.org/2006/vcard/ns#extended-address"
+      },
+      "organizationName": {
+        "@id": "http://www.w3.org/2006/vcard/ns#organization-name",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "postalCode": {
+        "@id": "http://www.w3.org/2006/vcard/ns#postal-code",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "authorityID": {
+        "@id": "http://data.food.gov.uk/business/def/core/authorityID",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "country": {
+        "@id": "http://data.food.gov.uk/business/def/core/country",
+        "@type": "@id"
+      },
+      "reconciledAuthority": {
+        "@id": "http://data.food.gov.uk/business/def/core/reconciledAuthority",
+        "@type": "@id"
+      },
+      "region": {
+        "@id": "http://data.food.gov.uk/business/def/core/region",
+        "@type": "@id"
+      },
+      "businessRN": {
+        "@id": "http://data.food.gov.uk/business/def/core/businessRN"
+      },
+      "establishment": {
+        "@id": "http://data.food.gov.uk/business/def/core/establishment",
+        "@type": "@id"
+      },
+      "associatedBusiness": {
+        "@id": "http://data.food.gov.uk/business/def/core/associatedBusiness",
+        "@type": "@id"
+      },
+      "reconciledFoodBusiness": {
+        "@id": "http://data.food.gov.uk/business/def/core/reconciledFoodBusiness",
+        "@type": "@id"
+      },
+      "tradingName": {
+        "@id": "http://data.food.gov.uk/business/def/core/tradingName",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "hasRegisteredSite": {
+        "@id": "http://www.w3.org/ns/org#hasRegisteredSite",
+        "@type": "@id"
+      },
+      "address": {
+        "@id": "http://data.food.gov.uk/business/def/core/address",
+        "@type": "@id"
+      },
+      "subOrganizationOf": {
+        "@id": "http://www.w3.org/ns/org#subOrganizationOf",
+        "@type": "@id"
+      },
+      "name": {
+        "@id": "http://xmlns.com/foaf/0.1/name",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "enrolment": {
+        "@id": "http://data.food.gov.uk/business/def/core/enrolment",
+        "@type": "@id"
+      },
+      "activityIntervals": {
+        "@id": "http://data.food.gov.uk/business/def/core/activityIntervals",
+        "@type": "@id"
+      },
+      "authorityEnrolmentID": {
+        "@id": "http://data.food.gov.uk/business/def/core/authorityEnrolmentID",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "authorityEstablishmentID": {
+        "@id": "http://data.food.gov.uk/business/def/core/authorityEstablishmentID",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "contact": {
+        "@id": "http://data.food.gov.uk/business/def/core/contact",
+        "@type": "@id"
+      },
+      "emailAddress": {
+        "@id": "http://data.food.gov.uk/business/def/core/emailAddress",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "person": {
+        "@id": "http://data.food.gov.uk/business/def/core/person",
+        "@type": "@id"
+      },
+      "telephoneNumber": {
+        "@id": "http://data.food.gov.uk/business/def/core/telephoneNumber",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "enrolmentAuthority": {
+        "@id": "http://data.food.gov.uk/business/def/core/enrolmentAuthority",
+        "@type": "@id"
+      },
+      "enrolmentDate": {
+        "@id": "http://data.food.gov.uk/business/def/core/enrolmentDate",
+        "@type": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "enrolmentStatus": {
+        "@id": "http://data.food.gov.uk/business/def/core/enrolmentStatus",
+        "@type": "@id"
+      },
+      "establishmentType": {
+        "@id": "http://data.food.gov.uk/business/def/core/establishmentType",
+        "@type": "@id"
+      },
+      "description": {
+        "@id": "http://purl.org/dc/terms/description"
+      },
+      "fsaReferenceNumber": {
+        "@id": "http://data.food.gov.uk/business/def/core/fsaReferenceNumber"
+      },
+      "legislativeRegime": {
+        "@id": "http://data.food.gov.uk/business/def/core/legislativeRegime",
+        "@type": "@id"
+      },
+      "localCompetentAuthority": {
+        "@id": "http://data.food.gov.uk/business/def/core/localCompetentAuthority",
+        "@type": "@id"
+      },
+      "operatorName": {
+        "@id": "http://data.food.gov.uk/business/def/core/operatorName",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "premisesAddress": {
+        "@id": "http://data.food.gov.uk/business/def/core/premisesAddress",
+        "@type": "@id"
+      },
+      "primaryActivityInterval": {
+        "@id": "http://data.food.gov.uk/business/def/core/primaryActivityInterval",
+        "@type": "@id"
+      },
+      "registeredActivityInterval": {
+        "@id": "http://data.food.gov.uk/business/def/core/registeredActivityInterval",
+        "@type": "@id"
+      },
+      "welshTradingName": {
+        "@id": "http://data.food.gov.uk/business/def/core/welshTradingName",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "type": {
+        "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+      },
+      "comment": {
+        "@id": "http://www.w3.org/2000/01/rdf-schema#comment"
+      },
+      "establishmentApproval": {
+        "@id": "http://data.food.gov.uk/business/def/core/establishmentApproval",
+        "@type": "@id"
+      },
+      "approvalCodeEu": {
+        "@id": "http://data.food.gov.uk/business/def/core/approvalCodeEu",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "approvedActivityIntervals": {
+        "@id": "http://data.food.gov.uk/business/def/core/approvedActivityIntervals",
+        "@type": "@id"
+      },
+      "establishmentRN": {
+        "@id": "http://data.food.gov.uk/business/def/core/establishmentRN"
+      },
+      "establishmentRegistration": {
+        "@id": "http://data.food.gov.uk/business/def/core/establishmentRegistration",
+        "@type": "@id"
+      },
+      "latestInspectionResults": {
+        "@id": "http://data.food.gov.uk/business/def/core/latestInspectionResults",
+        "@type": "@id"
+      },
+      "context": {
+        "@id": "http://data.food.gov.uk/business/def/core/context",
+        "@type": "@id"
+      },
+      "inspectionAuthority": {
+        "@id": "http://data.food.gov.uk/business/def/core/inspectionAuthority",
+        "@type": "@id"
+      },
+      "inspectionDateTime": {
+        "@id": "http://data.food.gov.uk/business/def/core/inspectionDateTime",
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "inspectionScheme": {
+        "@id": "http://data.food.gov.uk/business/def/core/inspectionScheme",
+        "@type": "@id"
+      },
+      "inspectionResultDataset": {
+        "@id": "http://data.food.gov.uk/business/def/core/inspectionResultDataset",
+        "@type": "@id"
+      },
+      "title": {
+        "@id": "http://purl.org/dc/terms/title"
+      },
+      "structure": {
+        "@id": "http://purl.org/linked-data/cube#structure",
+        "@type": "@id"
+      },
+      "component": {
+        "@id": "http://purl.org/linked-data/cube#component",
+        "@type": "@id"
+      },
+      "attribute": {
+        "@id": "http://purl.org/linked-data/cube#attribute",
+        "@type": "@id"
+      },
+      "range": {
+        "@id": "http://www.w3.org/2000/01/rdf-schema#range"
+      },
+      "codeList": {
+        "@id": "http://purl.org/linked-data/cube#codeList"
+      },
+      "dimension": {
+        "@id": "http://purl.org/linked-data/cube#dimension",
+        "@type": "@id"
+      },
+      "measure": {
+        "@id": "http://purl.org/linked-data/cube#measure",
+        "@type": "@id"
+      },
+      "order": {
+        "@id": "http://purl.org/linked-data/cube#order",
+        "@type": "http://www.w3.org/2001/XMLSchema#int"
+      },
+      "distribution": {
+        "@id": "http://www.w3.org/ns/dcat#distribution",
+        "@type": "@id"
+      },
+      "accessURL": {
+        "@id": "http://www.w3.org/ns/dcat#accessURL"
+      },
+      "ratingScheme": {
+        "@id": "http://data.food.gov.uk/business/def/core/ratingScheme",
+        "@type": "@id"
+      },
+      "hasTopConcept": {
+        "@id": "http://www.w3.org/2004/02/skos/core#hasTopConcept",
+        "@type": "@id"
+      },
+      "numericValue": {
+        "@id": "http://data.food.gov.uk/business/def/core/numericValue",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "ratingValue": {
+        "@id": "http://data.food.gov.uk/business/def/core/ratingValue",
+        "@type": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "sortOrderAscending": {
+        "@id": "http://data.food.gov.uk/business/def/core/sortOrderAscending",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "sortOrderDescending": {
+        "@id": "http://data.food.gov.uk/business/def/core/sortOrderDescending",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "publicationDateTime": {
+        "@id": "http://data.food.gov.uk/business/def/core/publicationDateTime",
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "rating": {
+        "@id": "http://data.food.gov.uk/business/def/core/rating",
+        "@type": "@id"
+      },
+      "dataSet": {
+        "@id": "http://purl.org/linked-data/cube#dataSet",
+        "@type": "@id"
+      },
+      "operator": {
+        "@id": "http://data.food.gov.uk/business/def/core/operator",
+        "@type": "@id"
+      },
+      "operatorRN": {
+        "@id": "http://data.food.gov.uk/business/def/core/operatorRN"
+      },
+      "reconciledOperator": {
+        "@id": "http://data.food.gov.uk/business/def/core/reconciledOperator",
+        "@type": "@id"
+      },
+      "premises": {
+        "@id": "http://data.food.gov.uk/business/def/core/premises",
+        "@type": "@id"
+      },
+      "givenAddress": {
+        "@id": "http://data.food.gov.uk/business/def/core/givenAddress",
+        "@type": "@id"
+      },
+      "prefAddress": {
+        "@id": "http://data.food.gov.uk/business/def/core/prefAddress",
+        "@type": "@id"
+      },
+      "premisesRN": {
+        "@id": "http://data.food.gov.uk/business/def/core/premisesRN"
+      },
+      "reconciledPremises": {
+        "@id": "http://data.food.gov.uk/business/def/core/reconciledPremises",
+        "@type": "@id"
+      },
+      "easting": {
+        "@id": "http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting",
+        "@type": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "northing": {
+        "@id": "http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing",
+        "@type": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "reconciledEstablishment": {
+        "@id": "http://data.food.gov.uk/business/def/core/reconciledEstablishment",
+        "@type": "@id"
+      },
+      "fhrsDisplayStatus": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/fhrsDisplayStatus",
+        "@type": "@id"
+      },
+      "displayAddress": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/displayAddress",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "displayAwaitingInspection": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/displayAwaitingInspection",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "displayAwaitingPublication": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/displayAwaitingPublication",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "displayEatSafe": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/displayEatSafe",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "displayExempt": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/displayExempt",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "displayImprovementRequired": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/displayImprovementRequired",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "displayName": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/displayName",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "displayPass": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/displayPass",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "displayScores": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/displayScores",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "displayStatusCode": {
+        "@id": "http://data.food.gov.uk/business/def/display-status/displayStatusCode",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "fhrsEstablishmentStatus": {
+        "@id": "http://data.food.gov.uk/business/def/establishment-status/fhrsEstablishmentStatus",
+        "@type": "@id"
+      },
+      "fhrsEstablishmentStatusCode": {
+        "@id": "http://data.food.gov.uk/business/def/establishment-status/fhrsEstablishmentStatusCode",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "visibility": {
+        "@id": "http://data.food.gov.uk/business/def/visibility/visibility",
+        "@type": "@id"
+      },
+      "firstName": {
+        "@id": "http://xmlns.com/foaf/0.1/firstName"
+      },
+      "givenName": {
+        "@id": "http://xmlns.com/foaf/0.1/givenName"
+      },
+      "lastName": {
+        "@id": "http://xmlns.com/foaf/0.1/lastName"
+      },
+      "confidenceScore": {
+        "@id": "http://data.food.gov.uk/business/def/fhrs/confidenceScore",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "hygieneScore": {
+        "@id": "http://data.food.gov.uk/business/def/fhrs/hygieneScore",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "overallAnnex5Score": {
+        "@id": "http://data.food.gov.uk/business/def/fhrs/overallAnnex5Score",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "structuralScore": {
+        "@id": "http://data.food.gov.uk/business/def/fhrs/structuralScore",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "@vocab": "http://data.food.gov.uk/business/def/core/"
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fuseki.fullname" . }}-config
+data:
+  config-tdb.ttl: |
+  {{- .Values.fuseki.config | nindent 4 }}

@@ -1,0 +1,20 @@
+{{- define "fuseki.s3loader" -}}
+- name: download-static-data
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  command: ["sh", "-c"]
+  args: ["$(rm -r /var/lib/fuseki/databases/DS* || true ) && aws s3 cp $(S3_BUCKET)/$(S3_KEY) /var/lib/fuseki/databases/$(S3_KEY) && tar -xzf /var/lib/fuseki/databases/$(S3_KEY) -C /var/lib/fuseki/databases"]
+  {{- if .Values.s3.enabled }}
+  envFrom:
+  - secretRef:
+      name: "{{ .Values.s3.secrets }}"
+  {{- end }}
+  env:
+  - name: S3_BUCKET
+    value: "{{ .Values.s3.loader.bucket }}"
+  - name: S3_KEY
+    value: "{{ .Values.s3.loader.key }}"
+  volumeMounts:
+  - name: data
+    mountPath: "/var/lib/fuseki/databases"
+{{- end -}}

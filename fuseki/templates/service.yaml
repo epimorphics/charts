@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fuseki.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "fuseki.name" . }}
+    helm.sh/chart: {{ include "fuseki.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+  {{- range $i, $j := .Values.service.annotations }}
+    {{ $i }}: "{{ $j }}"
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: fuseki
+      protocol: TCP
+      name: fuseki
+  selector:
+    app.kubernetes.io/name: {{ include "fuseki.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

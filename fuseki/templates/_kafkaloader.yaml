@@ -1,0 +1,22 @@
+{{- define "fuseki.kafkaloader" -}}
+- name: fuseki-kafka-loader
+  image: {{ .Values.kafkaLoader.repository }}:{{ .Values.kafkaLoader.tag }}
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  env:
+  - name: CONTEXT_FILE
+    value: "/app/fsa-core-context.jsonld"
+  - name: DP_KAFKA_BROKER
+    value: "{{ .Values.kafkaLoader.bootstrapServer }}"
+  - name: KAFKA_TOPIC
+    value: "{{ .Values.kafkaLoader.topic }}"
+  - name: FUSEKI_BACKUP_TOPIC
+    value: "{{ .Values.backups.topic }}"
+  volumeMounts:
+  - name: fsa-core-context
+    mountPath: "/app/fsa-core-context.jsonld"
+    subPath: fsa-core-context.jsonld
+  - name: run
+    mountPath: "/var/lib/fuseki/run"
+  resources:
+{{ toYaml .Values.resources | indent 4 }}
+{{- end -}}
