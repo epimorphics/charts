@@ -2,9 +2,11 @@ language: generic
 env:
   - HELM_VERSION=2.14.1 HELM_S3_VERSION=0.8.0
 install: 
-  - wget https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz
-  - tar -xzf helm-v$HELM_VERSION-linux-amd64.tar.gz
-  - cp linux-amd64/helm /usr/local/bin/helm
+  - wget https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz -O /tmp/helm.tar.gz
+  - tar -xzf /tmp/helm.tar.gz -C /tmp --strip-components=1
+  - chmod +x /tmp/helm
+  - mv /tmp/helm $HOME/.local/bin/helm
+  - helm init --client-only
   - helm plugin install https://github.com/hypnoglow/helm-s3.git --version $HELM_S3_VERSION
 script: make build
 deploy:
