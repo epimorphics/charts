@@ -5,6 +5,8 @@ install:
   - wget https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz -O /tmp/helm.tar.gz
   - tar -xzf /tmp/helm.tar.gz -C /tmp --strip-components=1
   - chmod +x /tmp/helm
+  - mkdir -p $HOME/.local/bin
+  - export PATH=$PATH:$HOME/.local/bin
   - mv /tmp/helm $HOME/.local/bin/helm
   - helm init --client-only
   - helm plugin install https://github.com/hypnoglow/helm-s3.git --version $HELM_S3_VERSION
