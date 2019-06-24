@@ -22,10 +22,6 @@ spec:
       annotations:
         {{- include "prometheus.podAnnotations" . | nindent 8}}
     spec:
-      volumes:
-      - name: credentials
-        secret:
-          secretName: "{{ .Values.rails.credentials.secret }}"
       {{- include "fluentd.emptydir" . | nindent 6}}
       containers:
         {{- include "fluentd.sidecar" . | nindent 8}}
