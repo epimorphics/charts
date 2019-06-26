@@ -7,6 +7,8 @@ metadata:
     helm.sh/chart: {{ include "sapi-app.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    skipper.epimorphics.com/visibility: "true"
+    skipper.epimorphics.com/stage: {{ default "unknown" .Values.skipper.stage }}
 spec:
   type: {{ .Values.service.type }}
   ports:
