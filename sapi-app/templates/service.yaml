@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     skipper.epimorphics.com/visibility: "true"
-    skipper.epimorphics.com/stage: {{ default "unknown" .Values.skipper.stage }}
+    skipper.epimorphics.com/stage: {{ .Values.skipper.stage }}
 spec:
   type: {{ .Values.service.type }}
   ports:

@@ -35,6 +35,9 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+skipper:
+  stage: "unknown"
+
 rails:
   credentials:
     secret: rails-preview-secrets
