@@ -16,6 +16,10 @@ service:
   type: ClusterIP
   port: 8080
 
+fuseki:
+  inRelease: true
+  location: ""
+
 environment: []
 
 secrets: []

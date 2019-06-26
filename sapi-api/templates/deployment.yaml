@@ -27,7 +27,11 @@ spec:
           - name: SERVER_PORT
             value: "{{ .Values.service.port }}"
           - name: SERVER_DATASOURCE_ENDPOINT
+{{- if .Values.fuseki.inRelease }}
             value: "http://{{ .Release.Name }}-fuseki:3030/ds/query"
+{{- else }}
+            value: "{{ .Values.fuseki.location }}"
+{{- end }}
 {{- range .Values.environment }}
           - name: {{ .name }}
             value: {{ .value }}
