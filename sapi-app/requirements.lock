@@ -1,6 +1,0 @@
-dependencies:
-- name: sapi-api
-  repository: file://../sapi-api
-  version: 0.1.3
-digest: sha256:05e3e59e40115c3c76ef0524a77025569dc67f3b837e3b9e8aef8af9a620eb32
-generated: 2019-05-23T19:15:29.11257243+01:00

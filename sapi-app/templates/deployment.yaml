@@ -22,14 +22,20 @@ spec:
       annotations:
         {{- include "prometheus.podAnnotations" . | nindent 8}}
     spec:
+      {{- if .Values.logging.fluentd.enabled }}
+      volumes:
       {{- include "fluentd.emptydir" . | nindent 6}}
+      {{- end }}
       containers:
         {{- include "fluentd.sidecar" . | nindent 8}}
         {{- include "prometheus.sidecar" . | nindent 8}}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{ if .Values.logging.fluentd.enabled }}
+          volumeMounts:
           {{- include "fluentd.logmount" . | nindent 10}}
+          {{ end }}
           env:
           - name: RAILS_SAPI_API_BASE
             value: "http://{{ .Release.Name }}-sapi-api:8080"

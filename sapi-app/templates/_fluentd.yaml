@@ -34,8 +34,8 @@
 {{- end -}}
 {{- define "fluentd.railsenv" -}}
 {{- if .Values.logging.fluentd.enabled }}
-- name: RAILS_LOG_TO_STDOUT
-  value: ""
+- name: RAILS_LOG_TO_FLUENTD
+  value: "true"
 {{- end }}
 {{- end -}}
 {{- define "fluentd.logmount" -}}
