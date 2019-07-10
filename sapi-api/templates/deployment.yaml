@@ -20,12 +20,13 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
+        {{- include "sapi-api.cache-nginx" . | indent 8 }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: SERVER_PORT
-            value: "{{ .Values.service.port }}"
+            value: "{{ .Values.app.port }}"
           - name: SERVER_DATASOURCE_ENDPOINT
 {{- if .Values.fuseki.inRelease }}
             value: "http://{{ .Release.Name }}-fuseki:3030/ds/query"
@@ -43,10 +44,14 @@ spec:
 {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.app.port }}
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if "Values.cache.enabled" }}
+      volumes:
+      {{- include "sapi-api.cache-nginx-volume" . | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -1,0 +1,50 @@
+{{- define "sapi-api.cache-nginx" }}
+{{- if .Values.cache.enabled }}
+- name: nginx-cache
+  image: "nginx:1.17.1"
+  imagePullPolicy: Always
+  volumeMounts:
+  - name: nginx-cache
+    mountPath: /var/nginx-cache/
+  - name: nginx-config
+    mountPath: /etc/nginx/conf.d/
+  ports:
+    - name: cache
+      containerPort: {{ .Values.cache.port }}
+      protocol: TCP
+{{- end }}
+{{- end }}
+{{- define "sapi-api.cache-nginx-volume" -}}
+{{- if .Values.cache.enabled }}
+- name: nginx-cache
+  emptyDir: {}
+- name: nginx-config
+  configMap:
+    name: {{ include "sapi-api.fullname" . }}
+{{- end }}
+{{- end }}
+{{- define "sapi-api.cache-config" }}
+{{- if .Values.cache.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "sapi-api.fullname" . }}
+data:
+  default.conf: |
+    proxy_cache_path /var/nginx-cache
+      levels=1:2
+      keys_zone=my_cache:10m
+      max_size=10g
+      inactive=60m
+      use_temp_path=off;
+
+    server {
+        listen {{ .Values.cache.port }};
+        server_name localhost;
+        location / {
+            proxy_cache my_cache;
+            proxy_pass http://localhost:{{ .Values.app.port }};
+        }
+    }
+{{- end }}
+{{- end }}

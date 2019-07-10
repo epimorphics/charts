@@ -13,7 +13,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
+      {{ if .Values.cache.enabled }}
+      targetPort: cache
+      {{ else }}
       targetPort: http
+      {{ end }}
       protocol: TCP
       name: http
   selector:

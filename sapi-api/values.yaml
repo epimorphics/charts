@@ -12,6 +12,9 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+app:
+  port: 8090
+
 service:
   type: ClusterIP
   port: 8080
@@ -19,6 +22,10 @@ service:
 fuseki:
   inRelease: true
   location: ""
+
+cache:
+  enabled: false
+  port: 8080
 
 environment: []
 
