@@ -19,6 +19,9 @@ dist/sapi-app-*.tgz: dist
 		cd sapi-app && helm dep update && cd ../
 		helm package sapi-app -d dist
 
+dist/sns-webhook-*.tgz: dist
+		helm package sns-webhook -d dist
+
 build-fuseki: dist/fuseki-*.tgz
 
 build-registry: dist/registry-*.tgz
@@ -27,7 +30,9 @@ build-sapi-api: dist/sapi-api-*.tgz
 
 build-sapi-app: dist/sapi-app-*.tgz
 
-build: build-fuseki build-registry build-sapi-api build-sapi-app
+build-sns-webhook: dist/sns-webhook-*.tgz
+
+build: build-fuseki build-registry build-sapi-api build-sapi-app build-sns-webhook
 
 deploy-fuseki: build-fuseki
 	helm s3 push dist/fuseki-*.tgz --force epi-charts
@@ -41,4 +46,7 @@ deploy-sapi-api: build-sapi-api
 deploy-sapi-app: build-sapi-app
 	helm s3 push dist/sapi-app-*.tgz --force epi-charts
 
-deploy: deploy-fuseki deploy-registry deploy-sapi-api deploy-sapi-app
+deploy-sns-webhook: build-sns-webhook
+	helm s3 push dist/sns-webhook-*.tgz --force epi-charts
+
+deploy: deploy-fuseki deploy-registry deploy-sapi-api deploy-sapi-app deploy-sns-webhook
