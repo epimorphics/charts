@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "sns-webhook.fullname" . }}-test-connection"
+  labels:
+{{ include "sns-webhook.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "sns-webhook.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

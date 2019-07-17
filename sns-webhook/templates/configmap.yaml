@@ -1,0 +1,14 @@
+{{ if .Values.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "sns-webhook.fullname" . }}
+  labels:
+{{ include "sns-webhook.labels" . | indent 4 }}
+data:
+  prometheus-sns-webhook.yaml: |
+    sns:
+      topicarn: {{ .Values.sns.topicarn }}
+      region: {{ .Values.sns.region }}
+    fakeMessage: false
+{{ end }}
