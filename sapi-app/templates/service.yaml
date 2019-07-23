@@ -16,6 +16,12 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+{{- if .Values.metrics.prometheus.serviceMonitor.enabled }}
+    - port: 9394
+      targetPort: prometheus
+      protocol: TCP
+      name: prometheus
+{{- end }}
   selector:
     app.kubernetes.io/name: {{ include "sapi-app.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
