@@ -1,0 +1,17 @@
+{{- if .Values.metrics.prometheus.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata: 
+  name: {{ include "sapi-app.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "sapi-app.name" . }}
+    helm.sh/chart: {{ include "sapi-app.chart" . }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "sapi-app.name" . }}
+      helm.sh/chart: {{ include "sapi-app.chart" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  endpoints:
+  - port: prometheus
+{{- end }}
