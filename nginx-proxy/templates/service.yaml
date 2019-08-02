@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nginx-proxy.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nginx-proxy.name" . }}
+    helm.sh/chart: {{ include "nginx-proxy.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    skipper.epimorphics.com/stage: none
+    skipper.epimorphics.com/visibility: "true"
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "nginx-proxy.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
