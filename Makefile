@@ -25,6 +25,9 @@ dist/sns-webhook-*.tgz: dist
 dist/nginx-proxy-*.tgz: dist
 		helm package nginx-proxy -d dist
 
+dist/tdb-builder-*.tgz: dist
+		helm package tdb-builder -d dist
+
 build-fuseki: dist/fuseki-*.tgz
 
 build-registry: dist/registry-*.tgz
@@ -37,24 +40,9 @@ build-sns-webhook: dist/sns-webhook-*.tgz
 
 build-nginx-proxy: dist/nginx-proxy-*.tgz
 
+build-tdb-builder: dist/tdb-builder-*.tgz
+
 build: build-fuseki build-registry build-sapi-api build-sapi-app build-sns-webhook build-nginx-proxy
 
-deploy-fuseki: build-fuseki
-	helm s3 push dist/fuseki-*.tgz --force epi-charts
-
-deploy-registry: build-registry
-	helm s3 push dist/registry-*.tgz --force epi-charts
-
-deploy-sapi-api: build-sapi-api
-	helm s3 push dist/sapi-api-*.tgz --force epi-charts
-
-deploy-sapi-app: build-sapi-app
-	helm s3 push dist/sapi-app-*.tgz --force epi-charts
-
-deploy-sns-webhook: build-sns-webhook
-	helm s3 push dist/sns-webhook-*.tgz --force epi-charts
-
-deploy-nginx-proxy: build-nginx-proxy
-	helm s3 push dist/nginx-proxy-*.tgz --force epi-charts
-
-deploy: deploy-fuseki deploy-registry deploy-sapi-api deploy-sapi-app deploy-sns-webhook deploy-nginx-proxy
+deploy: build
+	for x in dist/*.tgz ; do helm s3 push $$x --force epi-charts ; done

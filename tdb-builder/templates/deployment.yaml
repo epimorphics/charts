@@ -1,0 +1,60 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "tdb-builder.fullname" . }}-{{ .Values.arguments.outputName }}
+  labels:
+{{ include "tdb-builder.labels" . | indent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "tdb-builder.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      restartPolicy: Never
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+      - name: scratch-disk
+        persistentVolumeClaim:
+          claimName: {{ include "tdb-builder.fullname" . }}
+      - name: config
+        configMap:
+          name: {{ .Values.arguments.assemblyFile.configMap }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["tdb-build"]
+          env:
+          - name: NQUADS_FILE
+            value: {{ .Values.arguments.nquadsFile }}
+          - name: OUTPUT_LOCATION
+            value: {{ .Values.arguments.outputLocation }}
+          - name: OUTPUT_NAME
+            value: {{ .Values.arguments.outputName }}
+          envFrom:
+          - secretRef:
+              name: {{ .Values.awsSecret.name }}
+          volumeMounts:
+          - mountPath: /tdb-build
+            name: scratch-disk
+          - mountPath: /tdb-build/asm.ttl
+            name: config
+            subPath: {{ .Values.arguments.assemblyFile.subPath }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

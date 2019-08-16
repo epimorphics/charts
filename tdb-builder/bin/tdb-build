@@ -1,0 +1,22 @@
+#!/bin/bash
+# Downloads an nquads file from s3, then runs tdbloader and creates a text index
+# packages this into a tar archive and puts it on s3
+
+# ENVIRONMENT VARIABLES
+
+# DATABASE_LOCATION: location on disk of DS-DB and DS-DB-lucene builds
+# NQUADS_FILE: location of nquads file in s3, must start s3://...
+# OUTPUT_NAME: name of tdb dump, shouldn't end in tgz
+# OUTPUT_LOCATION: directory that will contain the tdb dump, must not end in a /
+set -ex 
+cd $DATABASE_LOCATION
+rm -rf $DATABASE_LOCATION/DS-DB
+rm -rf $DATABASE_LOCATION/DS-DB-lucene
+mkdir -p $DATABASE_LOCATION/DS-DB
+aws s3 cp $NQUADS_FILE $DATABASE_LOCATION/nquads.nq.gz
+tdbloader2 --loc=$DATABASE_LOCATION/DS-DB $DATABASE_LOCATION/nquads.nq.gz
+java -cp $FUSEKI_HOME/fuseki-server.jar jena.textindexer --desc=$DATABASE_LOCATION/asm.ttl
+tar -czvf $OUTPUT_NAME.tgz DS-DB DS-DB-lucene
+aws s3 cp $OUTPUT_NAME.tgz $OUTPUT_LOCATION/$OUTPUT_NAME.tgz
+rm -r DS-DB 
+rm -r DS-DB-lucene
