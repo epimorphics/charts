@@ -8,7 +8,7 @@ All charts are available in the epimorphics chart repository. s3://epi-charts/ch
 
 `aws s3 --profile=expt ls s3://epi-charts/charts`
 
-To make this repo available to helm use
+To make this repo available to helm, use
 
 ```bash
 helm plugin install https://github.com/hypnoglow/helm-s3.git
