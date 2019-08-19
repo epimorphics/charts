@@ -10,12 +10,13 @@
 # OUTPUT_LOCATION: directory that will contain the tdb dump, must not end in a /
 set -ex 
 cd $DATABASE_LOCATION
-rm -rf $DATABASE_LOCATION/DS-DB
-rm -rf $DATABASE_LOCATION/DS-DB-lucene
-mkdir -p $DATABASE_LOCATION/DS-DB
+rm -rf $DATABASE_LOCATION/databases/DS-DB
+rm -rf $DATABASE_LOCATION/databases/DS-DB-lucene
+mkdir -p $DATABASE_LOCATION/databases/DS-DB
 aws s3 cp $NQUADS_FILE $DATABASE_LOCATION/nquads.nq.gz
-tdbloader2 --loc=$DATABASE_LOCATION/DS-DB $DATABASE_LOCATION/nquads.nq.gz
+tdbloader2 --loc=$DATABASE_LOCATION/databases/DS-DB $DATABASE_LOCATION/nquads.nq.gz
 java -cp $FUSEKI_HOME/fuseki-server.jar jena.textindexer --desc=$DATABASE_LOCATION/asm.ttl
+cd $DATABASE_LOCATION/databases
 tar -czvf $OUTPUT_NAME.tgz DS-DB DS-DB-lucene
 aws s3 cp $OUTPUT_NAME.tgz $OUTPUT_LOCATION/$OUTPUT_NAME.tgz
 rm -r DS-DB 
