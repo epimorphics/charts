@@ -12,8 +12,8 @@ sns:
   secret: ""
 
 image:
-  repository: quorauk/prometheus-sns-webhook
-  tag: alpha
+  repository: epimorphics/prometheus-sns-webhook
+  tag: 0.0.1
   pullPolicy: Always
 
 imagePullSecrets: []
