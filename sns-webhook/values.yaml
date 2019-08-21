@@ -10,7 +10,7 @@ sns:
   topicarn:	""
   region: eu-west-1
   secret: ""
-  messageTemplate: "{{ range .Alerts }}{{ .Annotations.runbook_url }}\n{{ .Annotations.message }}\n{{ end }}"
+  messageTemplate: "{{ range .Alerts }}{{ .Annotations.runbook_url }}\\n{{ .Annotations.message }}\\n{{ end }}"
   subjectTemplate: "Alert: {{ .Status }}{{ .GroupLabels.alertname }}"
 
 image:
