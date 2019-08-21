@@ -10,10 +10,12 @@ sns:
   topicarn:	""
   region: eu-west-1
   secret: ""
+  messageTemplate: "{{ range .Alerts }}{{ .Annotations.runbook_url }}\n{{ .Annotations.message }}\n{{ end }}"
+  subjectTemplate: "Alert: {{ .Status }}{{ .GroupLabels.alertname }}"
 
 image:
   repository: epimorphics/prometheus-sns-webhook
-  tag: 0.0.1
+  tag: 0.0.2
   pullPolicy: Always
 
 imagePullSecrets: []

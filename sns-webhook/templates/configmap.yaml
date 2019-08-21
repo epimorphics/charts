@@ -11,4 +11,6 @@ data:
       topicarn: {{ .Values.sns.topicarn }}
       region: {{ .Values.sns.region }}
     fakeMessage: false
+    messageTemplate: "{{ .Values.sns.messageTemplate }}"
+    subjectTemplate: "{{ .Values.sns.subjectTemplate }}"
 {{ end }}
