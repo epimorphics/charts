@@ -10,7 +10,7 @@ Add the following labels to you pods
 
 ```
 labels:
-  fluentd: true
+  fluentd: "true"
   fluentd-app: app-name
 ```
 
