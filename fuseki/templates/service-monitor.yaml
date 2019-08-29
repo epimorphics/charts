@@ -14,7 +14,7 @@ spec:
     port: fuseki
   namespaceSelector:
     matchNames:
-    - {{ .Release.namespace }}
+    - {{ .Release.Namespace }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "fuseki.name" . }}
