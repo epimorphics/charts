@@ -67,6 +67,11 @@ fluentd:
       s3_region "#{ENV['S3_BUCKET_REGION']}"
       path "#{ENV['S3_PATH']}"
       s3_object_key_format %{path}${namespace_name}/${app}/%{time_slice}_%{index}.%{file_extension}
+      <format>
+        @type single_value
+        message_key log
+        add_newline false
+      </format>
 
       <inject>
         time_key time
