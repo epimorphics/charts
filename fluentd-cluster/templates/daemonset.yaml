@@ -46,8 +46,8 @@ spec:
           env:
           - name: FLUENT_UID
             value: "0"
-{{ range .Values.fluentd.environment }}
-{{ . | toYaml | indent 12 }}
+{{- if .Values.fluentd.environment }}
+{{ .Values.fluentd.environment | toYaml | indent 10 }}
 {{ end }}
           volumeMounts:
           - name: varlog
