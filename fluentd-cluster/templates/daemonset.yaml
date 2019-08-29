@@ -42,11 +42,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
-{{ .Values.fluentd.envFrom | toYaml | indent 10 }}
+{{ .Values.fluentd.envFrom | toYaml | indent 12 }}
           env:
           - name: FLUENT_UID
             value: "0"
-{{ .Values.fluentd.environment | toYaml | indent 10 }}
+{{ range .Values.fluentd.environment }}
+{{ . | toYaml | indent 12 }}
+{{ end }}
           volumeMounts:
           - name: varlog
             mountPath: /var/log
