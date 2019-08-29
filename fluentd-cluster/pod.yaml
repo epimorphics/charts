@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-logging
+  labels:
+    app: hello
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello
+  template:
+    metadata:
+      labels:
+        app: hello
+        fluentd: "true"
+        fluentd-app: hello-logger
+    spec:
+      containers:
+      - name: logger
+        image: busybox:latest
+        command: ["sh", "-c", "while true; do echo 'henlo deployment'; sleep 10; done"]
