@@ -1,0 +1,5 @@
+apiVersion: v2
+appVersion: "1.0.1"
+description: A Helm chart for Podium Kubernetes
+name: podium
+version: 1.0.1

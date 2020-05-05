@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: worker
+spec:
+  serviceName: worker
+  replicas: {{ .Values.podium.replicas }}
+  selector:
+    matchLabels:
+      app: podium-worker
+  template:
+    metadata:
+      labels:
+        app: podium-worker
+    spec:
+      initContainers:
+      - image: 293385631482.dkr.ecr.eu-west-1.amazonaws.com/epimorphics/podium-worker-init-app:{{ .Chart.AppVersion }}
+        name: init
+        env:
+        - name: PODIUM_SERVICE_NAME
+          value: {{ .Values.podium.service.name }}
+        - name: SPRING_REDIS_HOST
+          value: redis
+        - name: SPRING_REDIS_PORT
+          value: "{{ .Values.redis.port }}"
+        - name: STORAGE_S3_BUCKET
+          value: {{ .Values.storage.s3.bucket }}
+        - name: STORAGE_S3_BASEKEY
+          value: {{ .Values.storage.s3.baseKey }}
+        - name: FUSEKI_BASE
+          value: {{ .Values.podium.volume.path }}/fuseki
+        - name: PODIUM_WORKER_FUSEKI_DATASET_TEXT_ENABLED 
+          value: "{{ .Values.podium.worker.fuseki.dataset.text.enabled }}"
+        - name: PODIUM_WORKER_BASEPATH
+          value: {{ .Values.podium.volume.path }}
+        volumeMounts:
+        - name: podium
+          mountPath: "{{ .Values.podium.volume.path }}"
+        - name: fuseki-config
+          mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
+          subPath: "config.ttl"
+      containers:
+      - image: 293385631482.dkr.ecr.eu-west-1.amazonaws.com/epimorphics/managed-fuseki:3.13.0
+        name: fuseki
+        env:
+        - name: FUSEKI_BASE
+          value: {{ .Values.podium.volume.path }}/fuseki
+        volumeMounts:
+        - name: podium
+          mountPath: "{{ .Values.podium.volume.path }}"
+        - name: fuseki-config
+          mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
+          subPath: "config.ttl"
+      - image: 293385631482.dkr.ecr.eu-west-1.amazonaws.com/epimorphics/podium-worker-manager-web:{{ .Chart.AppVersion }}
+        name: manager
+        env:
+        - name: PODIUM_SERVICE_NAME
+          value: {{ .Values.podium.service.name }}
+        - name: SPRING_REDIS_HOST
+          value: redis
+        - name: SPRING_REDIS_PORT
+          value: "{{ .Values.redis.port }}"
+        - name: STORAGE_S3_BUCKET
+          value: {{ .Values.storage.s3.bucket }}
+        - name: STORAGE_S3_BASEKEY
+          value: {{ .Values.storage.s3.baseKey }}
+        - name: FUSEKI_BASE
+          value: {{ .Values.podium.volume.path }}/fuseki
+        - name: PODIUM_WORKER_FUSEKI_DATASET_TEXT_ENABLED 
+          value: "{{ .Values.podium.worker.fuseki.dataset.text.enabled }}"
+        - name: PODIUM_WORKER_BASEPATH
+          value: {{ .Values.podium.volume.path }}
+        - name: PODIUM_PUBLISH_CLIENT_API
+          value: http://publisher:8080
+        - name: PODIUM_WORKER_APIHOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        readinessProbe:
+          httpGet:
+            path: /status/ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 1
+        volumeMounts:
+        - name: podium
+          mountPath: "{{ .Values.podium.volume.path }}"
+        - name: fuseki-config
+          mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
+          subPath: "config.ttl"
+      serviceAccountName: {{ .Values.aws.serviceAccount }}
+      volumes:
+        - name: fuseki-config
+          configMap:
+            name: fuseki-config
+            items:
+            - key: "config.ttl"
+              path: "config.ttl"
+  volumeClaimTemplates:
+  - metadata:
+      name: podium
+    spec:
+      accessModes: [ "ReadWriteMany" ]
+      resources:
+        requests:
+          storage: {{ .Values.podium.volume.size }}

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+data:
+  redis.conf: |
+    # Turn on append only file
+    appendonly yes
+    appendfsync always
+
+    # Automatic rewrite of the append only file.
+    auto-aof-rewrite-percentage 100
+    auto-aof-rewrite-min-size 64mb
+
+    # When rewriting the AOF file use an RDB preamble in the
+    # AOF file for faster rewrites and recoveries
+    aof-use-rdb-preamble yes
+
+    # Turn on checkpointing
+    save {{ .Values.redis.backup.interval }} {{ .Values.redis.backup.minKeysChange }}
+
+    # Data dir
+    dir /redis-master-data
