@@ -21,6 +21,8 @@ spec:
           name: data
         - mountPath: /redis-master
           name: config
+  nodeSelector:
+    role: cassandra
   volumes:
     - name: data
       persistentVolumeClaim:

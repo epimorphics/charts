@@ -3,8 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: redis-data
 spec:
-  accessModes:
-    - ReadWriteMany
+  accessModes: 
+    - ReadWriteOnce
+  storageClassName: {{ .Values.redis.volume.class }}
   resources:
     requests:
       storage: {{ .Values.redis.volume.size }}

@@ -4,7 +4,7 @@ metadata:
   name: worker
 spec:
   serviceName: worker
-  replicas: {{ .Values.podium.replicas }}
+  replicas: {{ .Values.podium.worker.replicas }}
   selector:
     matchLabels:
       app: podium-worker
@@ -34,7 +34,7 @@ spec:
         - name: PODIUM_WORKER_BASEPATH
           value: {{ .Values.podium.volume.path }}
         volumeMounts:
-        - name: podium
+        - name: worker-data
           mountPath: "{{ .Values.podium.volume.path }}"
         - name: fuseki-config
           mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
@@ -46,7 +46,7 @@ spec:
         - name: FUSEKI_BASE
           value: {{ .Values.podium.volume.path }}/fuseki
         volumeMounts:
-        - name: podium
+        - name: worker-data
           mountPath: "{{ .Values.podium.volume.path }}"
         - name: fuseki-config
           mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
@@ -83,12 +83,14 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 1
         volumeMounts:
-        - name: podium
+        - name: worker-data
           mountPath: "{{ .Values.podium.volume.path }}"
         - name: fuseki-config
           mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
           subPath: "config.ttl"
       serviceAccountName: {{ .Values.aws.serviceAccount }}
+      nodeSelector:
+        role: cassandra
       volumes:
         - name: fuseki-config
           configMap:
@@ -98,9 +100,11 @@ spec:
               path: "config.ttl"
   volumeClaimTemplates:
   - metadata:
-      name: podium
+      name: worker-data
     spec:
-      accessModes: [ "ReadWriteMany" ]
+      accessModes: 
+        - ReadWriteOnce
+      storageClassName: {{ .Values.podium.volume.class }}
       resources:
         requests:
           storage: {{ .Values.podium.volume.size }}
