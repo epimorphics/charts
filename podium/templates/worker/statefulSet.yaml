@@ -90,7 +90,7 @@ spec:
           subPath: "config.ttl"
       serviceAccountName: {{ .Values.aws.serviceAccount }}
       nodeSelector:
-        role: cassandra
+        role: db
       volumes:
         - name: fuseki-config
           configMap:
