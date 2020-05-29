@@ -19,7 +19,9 @@ spec:
       value: {{ .Values.storage.s3.bucket }}
     - name: STORAGE_S3_BASEKEY
       value: {{ .Values.storage.s3.baseKey }}
+  {{ if .Values.aws.serviceAccount  }}
   serviceAccountName: {{ .Values.aws.serviceAccount }}
+  {{ end }}
   {{ if and .Values.podium .Values.podium.publisher }}
   {{ if .Values.podium.publisher.nodeSelector  }}
   nodeSelector:

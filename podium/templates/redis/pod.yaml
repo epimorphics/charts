@@ -31,11 +31,9 @@ spec:
         items:
           - key: redis.conf
             path: redis.conf
-  {{ if .Values.redis}}
-  {{ if .Values.redis.nodeSelector  }}
+  {{ if and .Values.redis .Values.redis.nodeSelector }}
   nodeSelector:
     {{- range $key, $value := .Values.redis.nodeSelector }}
     {{ $key }}: {{ $value }}
     {{- end }}
-  {{ end }}
   {{ end }}

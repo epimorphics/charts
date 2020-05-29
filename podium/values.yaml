@@ -1,13 +1,9 @@
 # Default values for podium.
 
-aws:
-  serviceAccount: s3-access
-
 redis:
   port: 6379
   volume:
     size: 1Gi
-    class: ""
   backup:
     interval: 86400
     minKeysChange: 10
@@ -30,4 +26,3 @@ podium:
   volume:
     path: /var/podium
     size: 2Gi
-    class: ""

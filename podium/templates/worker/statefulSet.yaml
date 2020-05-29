@@ -88,7 +88,9 @@ spec:
         - name: fuseki-config
           mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
           subPath: "config.ttl"
+      {{ if .Values.aws.serviceAccount  }}
       serviceAccountName: {{ .Values.aws.serviceAccount }}
+      {{ end }}
       {{ if and .Values.podium .Values.podium.worker }}
       {{ if .Values.podium.worker.nodeSelector  }}
       nodeSelector:
@@ -110,7 +112,9 @@ spec:
     spec:
       accessModes: 
         - ReadWriteOnce
+      {{ if .Values.podium.volume.class  }}
       storageClassName: {{ .Values.podium.volume.class }}
+      {{ end }}
       resources:
         requests:
           storage: {{ .Values.podium.volume.size }}
