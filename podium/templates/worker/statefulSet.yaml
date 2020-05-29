@@ -88,7 +88,7 @@ spec:
         - name: fuseki-config
           mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
           subPath: "config.ttl"
-      {{ if .Values.aws.serviceAccount  }}
+      {{ if and .Values.aws .Values.aws.serviceAccount  }}
       serviceAccountName: {{ .Values.aws.serviceAccount }}
       {{ end }}
       {{ if and .Values.podium .Values.podium.worker }}
