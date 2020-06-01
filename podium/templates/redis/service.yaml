@@ -5,7 +5,7 @@ metadata:
   labels:
     app: redis
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - port: {{ .Values.redis.port }}
     targetPort: {{ .Values.redis.port }}
