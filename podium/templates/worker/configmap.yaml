@@ -1,7 +1,8 @@
+{{ if eq .Values.fuseki.configmap.name "default-fuseki-config" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: fuseki-config
+  name: default-fuseki-config
 data:
   config.ttl: |    
     @prefix :        <#> .
@@ -47,3 +48,4 @@ data:
                         tdb:location   "/var/podium/fuseki/databases/DS-DB" ;
                         tdb:unionDefaultGraph true ;
         .
+{{ end }}

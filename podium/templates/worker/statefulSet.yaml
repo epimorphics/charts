@@ -104,9 +104,9 @@ spec:
       volumes:
         - name: fuseki-config
           configMap:
-            name: fuseki-config
+            name: {{ .Values.fuseki.configmap.name }}
             items:
-            - key: "config.ttl"
+            - key: "{{ .Values.fuseki.configmap.key }}"
               path: "config.ttl"
   volumeClaimTemplates:
   - metadata:

@@ -13,6 +13,11 @@ storage:
     bucket: podium-expt
     baseKey: podium/storage
 
+fuseki:
+  configmap:
+    name: default-fuseki-config
+    key: config.ttl
+
 podium:
   service:
     name: podium
