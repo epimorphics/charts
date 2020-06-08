@@ -51,7 +51,7 @@ spec:
         - name: fuseki-config
           mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
           subPath: "config.ttl"
-        {{ if .Values.fuseki.postgis .Values.fuseki.postgis.mountPath }}
+        {{ if and .Values.fuseki.postgis .Values.fuseki.postgis.mountPath }}
         - name: pgpasswd
           mountPath: "{{ .Values.fuseki.postgis.mountPath }}"
           subPath: passwd
@@ -128,7 +128,7 @@ spec:
             items:
             - key: "{{ .Values.fuseki.configmap.key }}"
               path: "config.ttl"
-        {{ if .Values.fuseki.postgis .Values.fuseki.postgis.secretName }}
+        {{ if and .Values.fuseki.postgis .Values.fuseki.postgis.secretName }}
         - name: pgpasswd
           secret:
             secretName: {{ .Values.fuseki.postgis.secretName }}
