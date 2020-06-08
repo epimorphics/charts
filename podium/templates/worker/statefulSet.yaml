@@ -128,10 +128,10 @@ spec:
             items:
             - key: "{{ .Values.fuseki.configmap.key }}"
               path: "config.ttl"
-        {{ if .Values.fuseki.postgis .Values.fuseki.postgis.secret }}
+        {{ if .Values.fuseki.postgis .Values.fuseki.postgis.secretName }}
         - name: pgpasswd
           secret:
-            secretName: postgis-secrets
+            secretName: {{ .Values.fuseki.postgis.secretName }}
             items:
             - key: {{ .Values.fuseki.postgis.pwdKey }}
               path: passwd
