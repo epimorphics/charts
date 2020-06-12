@@ -58,7 +58,7 @@ spec:
         {{ end }}
       {{ if .Values.fuseki.consumer.enabled }}
       - name: fuseki-consumer
-        image: 853478862498.dkr.ecr.eu-west-1.amazonaws.com/epimorphics/kafka-pipeline:0.0.1-SNAPSHOT
+        image: 853478862498.dkr.ecr.eu-west-1.amazonaws.com/epimorphics/testing/kp-fuseki-consumer:0.0.2-SNAPSHOT_ff50a03
         command: ["sh", "-c"]
         args: ["java -jar ./fuseki-consumer.jar {{ .Values.fuseki.consumer.kafka.topic }} $HOSTNAME"]
         env:
