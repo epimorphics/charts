@@ -56,21 +56,6 @@ spec:
           mountPath: "{{ .Values.fuseki.postgis.mountPath }}"
           subPath: passwd
         {{ end }}
-      {{ if .Values.fuseki.consumer.enabled }}
-      - name: fuseki-consumer
-        image: 853478862498.dkr.ecr.eu-west-1.amazonaws.com/epimorphics/testing/kp-fuseki-consumer:0.0.2-SNAPSHOT_ff50a03
-        command: ["sh", "-c"]
-        args: ["java -jar ./fuseki-consumer.jar {{ .Values.fuseki.consumer.kafka.topic }} $HOSTNAME"]
-        env:
-        - name: KAFKA_BROKER
-          value: {{ .Values.fuseki.consumer.kafka.brokers }}
-        - name: FUSEKI_UPDATE_SERVICE
-          value: http://localhost:3030/ds/update
-        - name: FUSEKI_GRAPH_SERVICE
-          value: http://localhost:3030/ds/data
-        - name: FUSEKI_BASE
-          value: {{ .Values.podium.volume.path }}/fuseki
-      {{ end }}
       - image: 293385631482.dkr.ecr.eu-west-1.amazonaws.com/epimorphics/podium-worker-manager-web:{{ .Chart.AppVersion }}
         name: manager
         env:

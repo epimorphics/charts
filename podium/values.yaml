@@ -17,8 +17,6 @@ fuseki:
   configmap:
     name: default-fuseki-config
     key: config.ttl
-  consumer:
-    enabled: false
 
 podium:
   service:
