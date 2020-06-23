@@ -1,3 +1,4 @@
+{{ if .Values.redis.volume.class }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -5,9 +6,8 @@ metadata:
 spec:
   accessModes: 
     - ReadWriteOnce
-  {{ if .Values.redis.volume.class  }}
   storageClassName: {{ .Values.redis.volume.class }}
-  {{ end }}
   resources:
     requests:
       storage: {{ .Values.redis.volume.size }}
+{{ end }}

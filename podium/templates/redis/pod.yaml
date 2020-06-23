@@ -23,8 +23,12 @@ spec:
           name: config
   volumes:
     - name: data
+      {{ if .Values.redis.volume.class }}
       persistentVolumeClaim:
         claimName: redis-data
+      {{ else }}
+      emptyDir: {}
+      {{ end }}
     - name: config
       configMap:
         name: redis-config

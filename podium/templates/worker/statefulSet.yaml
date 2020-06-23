@@ -51,10 +51,12 @@ spec:
         - name: fuseki-config
           mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
           subPath: "config.ttl"
-        {{ if and .Values.fuseki.postgis .Values.fuseki.postgis.mountPath }}
+        {{ if .Values.fuseki.postgis }}
+        {{ if .Values.fuseki.postgis.mountPath }}
         - name: pgpasswd
           mountPath: "{{ .Values.fuseki.postgis.mountPath }}"
           subPath: passwd
+        {{ end }}
         {{ end }}
       - image: 293385631482.dkr.ecr.eu-west-1.amazonaws.com/epimorphics/podium-worker-manager-web:{{ .Chart.AppVersion }}
         name: manager
@@ -113,7 +115,8 @@ spec:
             items:
             - key: "{{ .Values.fuseki.configmap.key }}"
               path: "config.ttl"
-        {{ if and .Values.fuseki.postgis .Values.fuseki.postgis.secretName }}
+        {{ if .Values.fuseki.postgis }}
+        {{ if .Values.fuseki.postgis.secretName }}
         - name: pgpasswd
           secret:
             secretName: {{ .Values.fuseki.postgis.secretName }}
@@ -121,15 +124,19 @@ spec:
             - key: {{ .Values.fuseki.postgis.pwdKey }}
               path: passwd
         {{ end }}
+        {{ end }}
+  {{ if .Values.podium.volume.class }}
   volumeClaimTemplates:
   - metadata:
       name: worker-data
     spec:
       accessModes: 
         - ReadWriteOnce
-      {{ if .Values.podium.volume.class  }}
       storageClassName: {{ .Values.podium.volume.class }}
-      {{ end }}
       resources:
         requests:
           storage: {{ .Values.podium.volume.size }}
+  {{ else }}
+        - name: worker-data
+          emptyDir: {}
+  {{ end }}
