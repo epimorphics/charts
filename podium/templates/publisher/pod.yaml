@@ -12,7 +12,7 @@ spec:
     - name: PODIUM_SERVICE_NAME
       value: {{ .Values.podium.service.name }}
     - name: SPRING_REDIS_HOST
-      value: redis
+      value: podium-redis-svc
     - name: SPRING_REDIS_PORT
       value: "{{ .Values.redis.port }}"
     - name: STORAGE_S3_BUCKET
