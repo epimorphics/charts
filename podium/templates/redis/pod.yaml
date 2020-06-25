@@ -25,13 +25,13 @@ spec:
     - name: data
       {{ if .Values.redis.volume.class }}
       persistentVolumeClaim:
-        claimName: redis-data
+        claimName: podium-redis-data
       {{ else }}
       emptyDir: {}
       {{ end }}
     - name: config
       configMap:
-        name: redis-config
+        name: podium-redis-config
         items:
           - key: redis.conf
             path: redis.conf
