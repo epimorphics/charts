@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: worker
+  name: podium-worker-svc
   labels:
     app: podium-worker
 spec:

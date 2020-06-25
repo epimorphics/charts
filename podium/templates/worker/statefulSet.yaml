@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: worker
+  name: podium-worker
 spec:
   serviceName: worker
   replicas: {{ .Values.podium.worker.replicas }}
@@ -34,7 +34,7 @@ spec:
         - name: PODIUM_WORKER_BASEPATH
           value: {{ .Values.podium.volume.path }}
         volumeMounts:
-        - name: worker-data
+        - name: podium-worker-data
           mountPath: "{{ .Values.podium.volume.path }}"
         - name: fuseki-config
           mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
@@ -46,7 +46,7 @@ spec:
         - name: FUSEKI_BASE
           value: {{ .Values.podium.volume.path }}/fuseki
         volumeMounts:
-        - name: worker-data
+        - name: podium-worker-data
           mountPath: "{{ .Values.podium.volume.path }}"
         - name: fuseki-config
           mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
@@ -90,7 +90,7 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 1
         volumeMounts:
-        - name: worker-data
+        - name: podium-worker-data
           mountPath: "{{ .Values.podium.volume.path }}"
         - name: fuseki-config
           mountPath: "{{ .Values.podium.volume.path }}/fuseki/config.ttl"
@@ -128,7 +128,7 @@ spec:
   {{ if .Values.podium.volume.class }}
   volumeClaimTemplates:
   - metadata:
-      name: worker-data
+      name: podium-worker-data
     spec:
       accessModes: 
         - ReadWriteOnce
@@ -137,6 +137,6 @@ spec:
         requests:
           storage: {{ .Values.podium.volume.size }}
   {{ else }}
-        - name: worker-data
+        - name: podium-worker-data
           emptyDir: {}
   {{ end }}

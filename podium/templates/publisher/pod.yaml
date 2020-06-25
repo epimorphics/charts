@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   labels:
     app: podium-publisher
-  name: publisher
+  name: podium-publisher
 spec:
   containers:
   - image: 293385631482.dkr.ecr.eu-west-1.amazonaws.com/epimorphics/podium-publisher-web:{{ .Chart.AppVersion }}

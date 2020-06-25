@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis
+  name: podium-redis-svc
   labels:
-    app: redis
+    app: podium-redis
 spec:
   type: ClusterIP
   ports:
   - port: {{ .Values.redis.port }}
     targetPort: {{ .Values.redis.port }}
   selector:
-    app: redis
+    app: podium-redis

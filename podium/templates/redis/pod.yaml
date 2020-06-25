@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    app: redis
-  name: redis
+    app: podium-redis
+  name: podium-redis
 spec:
   containers:
     - name: redis
