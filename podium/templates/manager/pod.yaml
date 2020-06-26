@@ -20,7 +20,7 @@ spec:
     - name: STORAGE_S3_BASEKEY
       value: {{ .Values.storage.s3.baseKey }}
     - name: PODIUM_WORKER_CLIENT_API
-      value: http://worker:8080
+      value: http://podium-worker-svc:8080
   {{ if and .Values.podium .Values.podium.manager }}
   {{ if .Values.podium.manager.nodeSelector  }}
   nodeSelector:
