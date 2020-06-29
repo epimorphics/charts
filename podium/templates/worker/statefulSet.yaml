@@ -78,7 +78,7 @@ spec:
         - name: PODIUM_WORKER_BASEPATH
           value: {{ .Values.podium.volume.path }}
         - name: PODIUM_PUBLISH_CLIENT_API
-          value: http://publisher:8080
+          value: http://podium-publisher-svc:8080
         - name: PODIUM_WORKER_APIHOST
           valueFrom:
             fieldRef:
