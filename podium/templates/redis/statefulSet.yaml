@@ -29,23 +29,31 @@ spec:
               name: data
             - mountPath: /redis-master
               name: config
-      volumes:
-        - name: data
-          {{ if .Values.redis.volume.class }}
-          persistentVolumeClaim:
-            claimName: podium-redis-data
-          {{ else }}
-          emptyDir: {}
-          {{ end }}
-        - name: config
-          configMap:
-            name: podium-redis-config
-            items:
-              - key: redis.conf
-                path: redis.conf
       {{ if and .Values.redis .Values.redis.nodeSelector }}
       nodeSelector:
         {{- range $key, $value := .Values.redis.nodeSelector }}
         {{ $key }}: {{ $value }}
         {{- end }}
       {{ end }}
+      volumes:
+        - name: config
+          configMap:
+            name: podium-redis-config
+            items:
+              - key: redis.conf
+                path: redis.conf
+  {{ if .Values.redis.volume.class }}
+  volumeClaimTemplates:
+  - metadata:
+      name: podium-worker-data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: {{ .Values.podium.volume.class }}
+      resources:
+        requests:
+          storage: {{ .Values.podium.volume.size }}
+  {{ else }}
+        - name: podium-worker-data
+          emptyDir: {}
+  {{ end }}
