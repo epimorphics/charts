@@ -1,6 +1,7 @@
 # Default values for podium.
 
 redis:
+  replicas: 1
   port: 6379
   volume:
     size: 1Gi

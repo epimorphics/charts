@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: podium-redis
+spec:
+  serviceName: podium-redis-svc
+  replicas: {{ .Values.redis.replicas }}
+  selector:
+    matchLabels:
+      app: podium-redis
+  template:
+    metadata:
+      labels:
+        app: podium-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis
+          command:
+            - redis-server
+            - "/redis-master/redis.conf"
+          env:
+            - name: MASTER
+              value: "true"
+          ports:
+            - containerPort: {{ .Values.redis.port }}
+          volumeMounts:
+            - mountPath: /redis-master-data
+              name: data
+            - mountPath: /redis-master
+              name: config
+      volumes:
+        - name: data
+          {{ if .Values.redis.volume.class }}
+          persistentVolumeClaim:
+            claimName: podium-redis-data
+          {{ else }}
+          emptyDir: {}
+          {{ end }}
+        - name: config
+          configMap:
+            name: podium-redis-config
+            items:
+              - key: redis.conf
+                path: redis.conf
+      {{ if and .Values.redis .Values.redis.nodeSelector }}
+      nodeSelector:
+        {{- range $key, $value := .Values.redis.nodeSelector }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+      {{ end }}

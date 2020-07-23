@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: podium-worker
 spec:
-  serviceName: worker
+  serviceName: podium-worker-svc
   replicas: {{ .Values.podium.worker.replicas }}
   selector:
     matchLabels:
@@ -29,7 +29,7 @@ spec:
           value: {{ .Values.storage.s3.baseKey }}
         - name: FUSEKI_BASE
           value: {{ .Values.podium.volume.path }}/fuseki
-        - name: PODIUM_WORKER_FUSEKI_DATASET_TEXT_ENABLED 
+        - name: PODIUM_WORKER_FUSEKI_DATASET_TEXT_ENABLED
           value: "{{ .Values.podium.worker.fuseki.dataset.text.enabled }}"
         - name: PODIUM_WORKER_BASEPATH
           value: {{ .Values.podium.volume.path }}
@@ -73,7 +73,7 @@ spec:
           value: {{ .Values.storage.s3.baseKey }}
         - name: FUSEKI_BASE
           value: {{ .Values.podium.volume.path }}/fuseki
-        - name: PODIUM_WORKER_FUSEKI_DATASET_TEXT_ENABLED 
+        - name: PODIUM_WORKER_FUSEKI_DATASET_TEXT_ENABLED
           value: "{{ .Values.podium.worker.fuseki.dataset.text.enabled }}"
         - name: PODIUM_WORKER_BASEPATH
           value: {{ .Values.podium.volume.path }}
@@ -130,7 +130,7 @@ spec:
   - metadata:
       name: podium-worker-data
     spec:
-      accessModes: 
+      accessModes:
         - ReadWriteOnce
       storageClassName: {{ .Values.podium.volume.class }}
       resources:
