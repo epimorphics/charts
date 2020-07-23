@@ -26,7 +26,7 @@ spec:
             - containerPort: {{ .Values.redis.port }}
           volumeMounts:
             - mountPath: /redis-master-data
-              name: data
+              name: podium-redis-data
             - mountPath: /redis-master
               name: config
       {{ if and .Values.redis .Values.redis.nodeSelector }}
@@ -45,7 +45,7 @@ spec:
   {{ if .Values.redis.volume.class }}
   volumeClaimTemplates:
   - metadata:
-      name: podium-worker-data
+      name: podium-redis-data
     spec:
       accessModes:
         - ReadWriteOnce
@@ -54,6 +54,6 @@ spec:
         requests:
           storage: {{ .Values.podium.volume.size }}
   {{ else }}
-        - name: podium-worker-data
+        - name: podium-redis-data
           emptyDir: {}
   {{ end }}
