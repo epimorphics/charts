@@ -49,10 +49,10 @@ spec:
     spec:
       accessModes:
         - ReadWriteOnce
-      storageClassName: {{ .Values.podium.volume.class }}
+      storageClassName: {{ .Values.redis.volume.class }}
       resources:
         requests:
-          storage: {{ .Values.podium.volume.size }}
+          storage: {{ .Values.redis.volume.size }}
   {{ else }}
         - name: podium-redis-data
           emptyDir: {}
